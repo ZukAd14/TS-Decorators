@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
 import { Department } from "@prisma/client";
+import { Request, Response } from "express";
 
-export const getAllDepartments = async (req, res) => {
+export const getAllDepartments = async (req: Request, res: Response) => {
   return res.json(await db.department.findMany());
 };
 
-export const getDepartmentById = async (req, res) => {
+export const getDepartmentById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const department = await db.department.findUnique({ where: { id } });
   
@@ -16,13 +17,13 @@ export const getDepartmentById = async (req, res) => {
   return res.json(department);
 }
 
-export const createDepartment = async (req, res) => {
+export const createDepartment = async (req: Request, res: Response) => {
   const { name, description } = req.body;
 
   if(!name || !description)
     return res.status(400).json({ message: "Invalid department data" });
 
-  const departmentData = { 
+  const departmentData: Omit<Department, "id"> = { 
     name,
     description
   };
@@ -30,14 +31,14 @@ export const createDepartment = async (req, res) => {
   return res.json(await db.department.create({ data: departmentData }));
 }
 
-export const updateDepartment = async (req, res) => {
+export const updateDepartment = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, description } = req.body;
   
   if(!name || !description)
     return res.status(400).json({ message: "Invalid department data" });
 
-  const departmentData = { 
+  const departmentData: Omit<Department, "id"> = { 
     name,
     description
   };
@@ -53,7 +54,7 @@ export const updateDepartment = async (req, res) => {
   return res.json(department);
 }
 
-export const deleteDepartment = async (req, res) => {
+export const deleteDepartment = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const department = await db.department.delete({ where: { id } });

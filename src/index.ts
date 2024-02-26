@@ -1,29 +1,33 @@
-import express from 'express'
+import express, { Router } from 'express'
 import cors from 'cors'
 import departmentsRoutes from './routes/departments.routes'
 import employeesRoutes from './routes/employees.routes'
 import productsRoutes from './routes/products.routes'
 
+interface RouteGroup {
+  path: string;
+  routes: Router;
+}
 class App {
-  app: express.Application
-  routes: [] = []
-  server: any
+  private app: express.Application
+  private routes: RouteGroup[] = []
+  private server: any
 
   constructor() {
     this.app = express()
   }
 
-  addRoutes(path, routes) {
+  public addRoutes(path: string, routes: Router): void {
     this.routes.push({ path, routes })
   }
 
-  prepareRoutes() {
+  private prepareRoutes(): void {
     for(const group of this.routes) {
       this.app.use(group.path, group.routes)
     }
   }
 
-  run(port) {
+  public run(port: string | number): void {
 
     this.app.use(cors())
     this.app.use(express.json())
